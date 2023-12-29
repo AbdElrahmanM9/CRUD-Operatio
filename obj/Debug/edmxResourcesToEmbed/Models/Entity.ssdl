@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CRUDModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Centers">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CenterName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="GovernorateId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Employees">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EmployeeName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Salary" Type="int" Nullable="false" />
+    <Property Name="NationalID" Type="varchar" MaxLength="14" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="Governorate" Type="nvarchar" MaxLength="50" />
+    <Property Name="Center" Type="nvarchar" MaxLength="50" />
+    <Property Name="Village" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Governorates">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="GovernorateName" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Roles">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RoleName" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="RoleID" Type="int" Nullable="false" />
+    <Property Name="PasswordHash" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Villages">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="VillageName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="CenterId" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK__Centers__Governo__145C0A3F">
+    <End Role="Governorates" Type="Self.Governorates" Multiplicity="1" />
+    <End Role="Centers" Type="Self.Centers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Governorates">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Centers">
+        <PropertyRef Name="GovernorateId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Users__RoleID__1BFD2C07">
+    <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+    <End Role="Users" Type="Self.Users" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Roles">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="RoleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Villages__Center__173876EA">
+    <End Role="Centers" Type="Self.Centers" Multiplicity="1" />
+    <End Role="Villages" Type="Self.Villages" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Centers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Villages">
+        <PropertyRef Name="CenterId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="CRUDModelStoreContainer">
+    <EntitySet Name="Centers" EntityType="Self.Centers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Employees" EntityType="Self.Employees" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Governorates" EntityType="Self.Governorates" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Villages" EntityType="Self.Villages" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__Centers__Governo__145C0A3F" Association="Self.FK__Centers__Governo__145C0A3F">
+      <End Role="Governorates" EntitySet="Governorates" />
+      <End Role="Centers" EntitySet="Centers" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Users__RoleID__1BFD2C07" Association="Self.FK__Users__RoleID__1BFD2C07">
+      <End Role="Roles" EntitySet="Roles" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Villages__Center__173876EA" Association="Self.FK__Villages__Center__173876EA">
+      <End Role="Centers" EntitySet="Centers" />
+      <End Role="Villages" EntitySet="Villages" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

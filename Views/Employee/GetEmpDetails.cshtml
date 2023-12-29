@@ -1,0 +1,45 @@
+﻿@model CRUD_Operations.Models.Employee
+
+@{
+    ViewBag.Title = "DetailsEmployee";
+}
+<br />
+<div style="padding-right: 1.5rem;" class="container-fluid">
+    <div class="col-lg" id="ViewTable">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-sm-flex justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">@Model.EmployeeName دليل الموظف</h6>
+                <button onclick="window.print()" class="btn btn-primary">طباعة</button>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive" id="CompanyId">
+                    <table class="table table-bordered" id="Employee" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th style="width:30%">اسم الموظف</th>
+                                <th style="width:20%">رقم البطاقة</th>
+                                <th>المرتب</th>
+                                <th>المحافظة</th>
+                                <th>المركز</th>
+                                <th>القرية</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <td>@Model.EmployeeName</td>
+                        <td>@Model.NationalID</td>
+
+                        <td>@Model.Salary</td>
+
+                        <td>@Model.Governorate</td>
+                        <td>@Model.Center</td>
+                        <td>@Model.Village</td>
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

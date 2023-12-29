@@ -1,0 +1,139 @@
+﻿@model IEnumerable<CRUD_Operations.Models.Employee>
+
+@{
+    ViewBag.Title = "Index";
+    var Counter = 1;
+}
+<br />
+<div style="padding-right: 1.5rem;" class="container-fluid">
+    <div class="col-lg" id="ViewTable">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-sm-flex justify-content-between">
+                <p>
+                    @Html.ActionLink("Create New", "AddEmployee")
+                </p>
+                <h6 class="m-0 font-weight-bold text-primary">دليل الموظفين</h6>
+                <button onclick="window.print()" class="btn btn-primary">طباعة</button>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive" id="CompanyId">
+                    <table class="table table-bordered" id="Employee" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>م</th>
+                                <th style="width:30%">اسم الموظف</th>
+                                <th style="width:20%">رقم البطاقة</th>
+                                <th>المرتب</th>
+                                <th>المحافظة</th>
+                                <th>المركز</th>
+                                <th>القرية</th>
+                                <th>تعديل</th>
+                                <th>تفاصيل</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr data-id="@item.Id">
+                                    <td value=@Counter>@Counter</td>
+                                    <td>@item.EmployeeName</td>
+                                    <td>@item.NationalID</td>
+
+                                    <td>@item.Salary</td>
+
+                                    <td>@item.Governorate</td>
+                                    <td>@item.Center</td>
+                                    <td>@item.Village</td>
+                                    <td onclick="Edit(@item.Id)"><img style="width:100%" class="svg-icon" type="button" src="~/IMG/023-edit-1.svg" title="Edit" /></td>
+                                    <td onclick="Details(@item.Id)"><img style="width:100%" class="svg-icon" type="button" src="~/IMG/admin-svgrepo-com.svg" title="Details" /></td>
+                                    <td onclick="Delete(@item.Id)"><img style="width:100%" class="svg-icon" type="button" src="~/IMG/018-delete.svg" title="Delete" /></td>
+                                </tr>
+
+                                Counter++;
+                            }
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- DataTales Example -->
+    <div class="col-lg" id="EditTable">
+
+    </div>
+    <div class="col-lg" id="Table">
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    //$("#btnGenerate").click(function () {
+    //    var htmlData = $("#CompanyId").html();
+
+    //    htmlData = htmlData.replace(/</g, "strTag").replace(/>/g, "EndTag");
+
+    //    window.open("/Employee/ExportToPDF?html=" + htmlData, "_blank");
+    //});
+
+    function Edit(Id) {
+        debugger;
+        $.ajax({
+            url: '/Employee/EditEmp',
+            data: {
+                Id: Id
+            },
+            type:'get',
+            contentType: "application/json",
+            success: function (data) {
+                debugger;
+                $("#ViewTable").html('');
+                $("#EditTable").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { debugger; }
+        });
+    }
+    function Details(Id) {
+        debugger;
+        $.ajax({
+            type: 'GET',
+            url: '/Employee/GetEmpDetails',
+            data: {
+                Id: Id
+            },
+            dataType: 'text',
+            contentType: "application/json",
+            success: function (data) {
+                debugger;
+                $("#ViewTable").html('');
+                $("#EditTable").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                debugger;
+                alert("Error");
+            }
+        });
+    }
+    function Delete(Id) {
+        debugger;
+        $.ajax({
+            type: 'POST',
+            url: '/Employee/Delete',
+            data: {
+                Id: Id
+            },
+            dataType: 'text',
+            success: function (data) {
+                debugger;
+                $("#ViewTable").window().load();
+                $("#ViewTable").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { debugger; }
+        });
+    }
+</script>

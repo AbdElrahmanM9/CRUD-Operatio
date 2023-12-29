@@ -1,0 +1,184 @@
+﻿@model CRUD_Operations.ViewModel.EmployeeModel
+
+@{
+    ViewBag.Title = "Add Employee";
+}
+<br />
+<div style="padding-right: 2.5rem;" class="container-fluid" id="AddEmployee">
+    <div class="col-lg" id="ViewTable">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h2 style="text-align:center">إضافة موظف</h2>
+                <div class="table-responsive">
+                    <div class="form-horizontal">
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.EmployeeName, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.EmployeeName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.EmployeeName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <form id="salaryForm">
+                            @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <input type="number" id="salary" name="salary" min="5000" max="50000" class="form-control" required>
+                                @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+                            </div>
+                        </form>
+                        <div class="form-group">
+                            <form id="nationalIdForm">
+                                @Html.LabelFor(model => model.NationalID, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <input type="text" id="nationalId" name="nationalId" pattern="^(?![23])\d{14}$" class="form-control" required>
+                                    @Html.ValidationMessageFor(model => model.NationalID, "", new { @class = "text-danger" })
+                                </div>
+                            </form>
+
+                        </div>
+                        <div class="row">
+                            <div class="form-group col col-4">
+                                @Html.LabelFor(model => model.Governorate)
+                                @Html.DropDownListFor(model => model.Governorate, (SelectList)ViewBag.GovernorateList, "-- Select Governorate --", new { @class = "form-control", id = "Governorate" })
+                                @Html.ValidationMessageFor(model => model.Governorate, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group col col-3">
+                                @Html.LabelFor(model => model.Center)
+                                <select id="centerDropdown" name="Center" class="form-control">
+                                    <option value="">-- Select Center --</option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.Center, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group col col-4">
+                                @Html.LabelFor(model => model.Village)
+                                <select id="villageDropdown" name="Village" class="form-control">
+                                    <option value="">-- Select Village --</option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.Village, "", new { @class = "text-danger" })
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" onclick="Save()" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+<script src="~/Scripts/jquery-1.8.0.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Governorate').change(function () {
+            debugger;
+            var governorateId = $(this).val();
+            if (governorateId) {
+                $.ajax({
+                    url: '/Employee/GetCenters',
+                    data: { governorateId: governorateId },
+                    type: 'get',
+                    success: function (data) {
+                        $('#centerDropdown').empty();
+                        $('#villageDropdown').empty();
+                        $('#centerDropdown').append($('<option>').text('-- Select Center --').val(''));
+                        $.each(data, function (index, center) {
+                            $('#centerDropdown').append($('<option>').text(center.CenterName).val(center.Id));
+                        });
+                    }
+                });
+            } else {
+                debugger;
+                $('#centerDropdown').empty();
+                $('#villageDropdown').empty();
+            }
+        });
+        $('#centerDropdown').change(function () {
+            var centerId = $(this).val();
+            if (centerId) {
+                $.ajax({
+                    url: '/Employee/GetVillages',
+                    data: { centerId: centerId },
+                    type: 'get',
+                    success: function (data) {
+                        $('#villageDropdown').empty();
+                        $('#villageDropdown').append($('<option>').text('-- Select Village --').val(''));
+                        $.each(data, function (index, village) {
+                            $('#villageDropdown').append($('<option>').html(village.VillageName).val(village.Id));
+                        });
+                    }
+                });
+            } else {
+                $('#villageDropdown').empty();
+            }
+        });
+    });
+    function Save() {
+        debugger;
+        var EmployeeName = $("#EmployeeName").val();
+        var Salary = $("#salary").val();
+        var NationalID = $("#nationalId").val();
+        var GovernorateName = $("#Governorate option:selected").text();
+        var CenterName = $("#centerDropdown option:selected").text();
+        var VillageName = $("#villageDropdown option:selected").text();
+        var employee = {
+            EmployeeName: EmployeeName,
+            Salary: Salary,
+            NationalID: NationalID,
+            Governorate: GovernorateName,
+            Center: CenterName,
+            Village: VillageName,
+        }
+        $.ajax({
+            url: '/Employee/AddNewEmployee',
+            data: employee,
+            contentType: "application/json",
+            success: function (data) {
+                debugger;
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                debugger;
+                alert("Error");
+            }
+        });
+    }
+
+    document.getElementById("Salary").addEventListener("Create", function (event) {
+        debugger;
+        var salaryInput = document.getElementById("salary");
+        var salary = parseFloat(salaryInput.value);
+
+        if (isNaN(salary) || salary < 5000 || salary > 50000) {
+            alert("Salary must be between 5000 and 50000.");
+            event.preventDefault();
+        }
+    });
+
+    document.getElementById("nationalId").addEventListener("Create", function (event) {
+        debugger;
+        var nationalIdInput = document.getElementById("nationalId");
+        var nationalId = nationalIdInput.value;
+        debugger;
+        var pattern = /^(?![23])\d{14}$/;
+        if (!pattern.test(nationalId)) {
+            alert("National ID must be 14 digits and should not start with 2 or 3.");
+            event.preventDefault();
+        }
+    });
+</script>

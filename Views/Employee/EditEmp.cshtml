@@ -1,0 +1,169 @@
+﻿@model CRUD_Operations.Models.Employee
+
+@{
+    ViewBag.Title = "EditEmployee";
+}
+<input type="hidden" value="@Model.Id" id="Id" />
+<div style="padding-right: 2.5rem;" class="container-fluid">
+    <div class="col-lg" id="ViewTable">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h2 style="text-align:center">تعديل</h2>
+                <div class="table-responsive" id="EditEmployee">
+                    <div class="form-horizontal">
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.EmployeeName, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.EmployeeName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.EmployeeName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.NationalID, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.NationalID, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.NationalID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col col-3">
+                                @Html.LabelFor(model => model.Governorate)
+                                @Html.DropDownListFor(model => model.Governorate, (SelectList)ViewBag.GovernorateList, "-- Select Governorate --", new { @class = "form-control", id = "Governorate" })
+                                @Html.ValidationMessageFor(model => model.Governorate, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group col col-3">
+                                @Html.LabelFor(model => model.Center)
+                                <select id="centerDropdown" name="Center" class="form-control">
+                                    <option value="">-- Select Center --</option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.Center, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group col col-3">
+                                @Html.LabelFor(model => model.Village)
+                                <select id="villageDropdown" name="Village" class="form-control">
+                                    <option value="">-- Select Village --</option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.Village, "", new { @class = "text-danger" })
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" onclick="Save()" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg" id="EditTable">
+
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#centerDropdown').change(function () {
+            var centerId = $(this).val();
+            if (centerId) {
+                $.ajax({
+                    url: '/Employee/GetVillages',
+                    data: { centerId: centerId },
+                    type: 'get',
+                    success: function (data) {
+                        $('#villageDropdown').empty();
+                        $('#villageDropdown').append($('<option>').text('-- Select Village --').val(''));
+                        $.each(data, function (index, village) {
+                            $('#villageDropdown').append($('<option>').html(village.VillageName).val(village.Id));
+                        });
+                    }
+                });
+            } else {
+                $('#villageDropdown').empty();
+            }
+        });
+    });
+    $('#Governorate').change(function () {
+        debugger;
+        var governorateId = $(this).val();
+        if (governorateId) {
+            $.ajax({
+                url: '/Employee/GetCenters',
+                data: { governorateId: governorateId },
+                type: 'get',
+                success: function (data) {
+                    $('#centerDropdown').empty();
+                    $('#villageDropdown').empty();
+                    $('#centerDropdown').append($('<option>').text('-- Select Center --').val(''));
+                    $.each(data, function (index, center) {
+                        $('#centerDropdown').append($('<option>').text(center.CenterName).val(center.Id));
+                    });
+                }
+            });
+        } else {
+            debugger;
+            $('#centerDropdown').empty();
+            $('#villageDropdown').empty();
+        }
+    });
+    function Save() {
+        debugger;
+            var Id = $("#Id").val();
+            var EmployeeName = $("#EmployeeName").val();
+            var Salary = $("#Salary").val();
+            var NationalID = $("#NationalID").val();
+            var GovernorateName = $("#Governorate option:selected").text();
+            var CenterName = $("#centerDropdown option:selected").text();
+            var VillageName = $("#villageDropdown option:selected").text();
+        var employee = {
+                Id:Id,
+                EmployeeName: EmployeeName,
+                Salary: Salary,
+                NationalID: NationalID,
+                Governorate: GovernorateName,
+                Center: CenterName,
+                Village: VillageName,
+        }
+        $.ajax({
+            url: '/Employee/EditEmployee',
+            data: employee,
+            contentType: "application/json",
+            success: function (data) {
+                $("#EmployeeName").val("");
+                $("#Salary").val("");
+                $("#NationalID").val("");
+                $("#Governorate").val("");
+                $("#Center").val("");
+                $("#Village").val("");
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { }
+        });
+
+    }
+</script>

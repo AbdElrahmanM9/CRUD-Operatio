@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CRUDModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Center">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CenterName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="GovernorateId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Governorate" Relationship="Self.FK__Centers__Governo__145C0A3F" FromRole="Centers" ToRole="Governorates" />
+    <NavigationProperty Name="Villages" Relationship="Self.FK__Villages__Center__173876EA" FromRole="Centers" ToRole="Villages" />
+  </EntityType>
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmployeeName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Salary" Type="Int32" Nullable="false" />
+    <Property Name="NationalID" Type="String" MaxLength="14" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="IsDeleted" Type="Boolean" />
+    <Property Name="Governorate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Center" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Village" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Governorate">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="GovernorateName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Centers" Relationship="Self.FK__Centers__Governo__145C0A3F" FromRole="Governorates" ToRole="Centers" />
+  </EntityType>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Users" Relationship="Self.FK__Users__RoleID__1BFD2C07" FromRole="Roles" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="RoleID" Type="Int32" Nullable="false" />
+    <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Role" Relationship="Self.FK__Users__RoleID__1BFD2C07" FromRole="Users" ToRole="Roles" />
+  </EntityType>
+  <EntityType Name="Village">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="VillageName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CenterId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Center" Relationship="Self.FK__Villages__Center__173876EA" FromRole="Villages" ToRole="Centers" />
+  </EntityType>
+  <Association Name="FK__Centers__Governo__145C0A3F">
+    <End Role="Governorates" Type="Self.Governorate" Multiplicity="1" />
+    <End Role="Centers" Type="Self.Center" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Governorates">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Centers">
+        <PropertyRef Name="GovernorateId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Villages__Center__173876EA">
+    <End Role="Centers" Type="Self.Center" Multiplicity="1" />
+    <End Role="Villages" Type="Self.Village" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Centers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Villages">
+        <PropertyRef Name="CenterId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Users__RoleID__1BFD2C07">
+    <End Role="Roles" Type="Self.Role" Multiplicity="1" />
+    <End Role="Users" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Roles">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="RoleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="CRUDEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Centers" EntityType="Self.Center" />
+    <EntitySet Name="Employees" EntityType="Self.Employee" />
+    <EntitySet Name="Governorates" EntityType="Self.Governorate" />
+    <EntitySet Name="Roles" EntityType="Self.Role" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <EntitySet Name="Villages" EntityType="Self.Village" />
+    <AssociationSet Name="FK__Centers__Governo__145C0A3F" Association="Self.FK__Centers__Governo__145C0A3F">
+      <End Role="Governorates" EntitySet="Governorates" />
+      <End Role="Centers" EntitySet="Centers" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Villages__Center__173876EA" Association="Self.FK__Villages__Center__173876EA">
+      <End Role="Centers" EntitySet="Centers" />
+      <End Role="Villages" EntitySet="Villages" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Users__RoleID__1BFD2C07" Association="Self.FK__Users__RoleID__1BFD2C07">
+      <End Role="Roles" EntitySet="Roles" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
