@@ -151,6 +151,17 @@
             contentType: "application/json",
             success: function (data) {
                 debugger;
+                $.ajax({
+                    url: '/Employee/Index',
+                    contentType: "application/json",
+                    success: function (data) {
+                        debugger;
+                        //location.reload();
+                        $('AddEmployee').html('');
+                        $('AddEmployee').html(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) { debugger; }
+                });
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 debugger;

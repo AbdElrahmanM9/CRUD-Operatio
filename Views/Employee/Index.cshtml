@@ -130,8 +130,7 @@
             dataType: 'text',
             success: function (data) {
                 debugger;
-                $("#ViewTable").window().load();
-                $("#ViewTable").html(data);
+                location.reload();
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) { debugger; }
         });

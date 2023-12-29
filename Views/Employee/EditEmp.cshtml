@@ -155,12 +155,17 @@
             data: employee,
             contentType: "application/json",
             success: function (data) {
-                $("#EmployeeName").val("");
-                $("#Salary").val("");
-                $("#NationalID").val("");
-                $("#Governorate").val("");
-                $("#Center").val("");
-                $("#Village").val("");
+                $.ajax({
+                    url: '/Employee/Index',
+                    contentType: "application/json",
+                    success: function (data) {
+                        debugger;
+                        location.reload();
+                        //$('AddEmployee').html('');
+                        //$('AddEmployee').html(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) { debugger; }
+                });
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) { }
         });
